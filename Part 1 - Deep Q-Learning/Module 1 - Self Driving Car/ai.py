@@ -14,13 +14,13 @@ from torch.autograd import Variable
 
 # Creating the architecture of the Neural Network
 
-class Network(nn.Module):
+class Network(nn.Module): #inherits from nn.Module
     
     def __init__(self, input_size, nb_action):
-        super(Network, self).__init__()
+        super(Network, self).__init__() #
         self.input_size = input_size
         self.nb_action = nb_action
-        self.fc1 = nn.Linear(input_size, 30)
+        self.fc1 = nn.Linear(input_size, 30) #Full coneection (neurons in first layer, enurons in second layer)
         self.fc2 = nn.Linear(30, nb_action)
     
     def forward(self, state):
@@ -42,7 +42,7 @@ class ReplayMemory(object):
             del self.memory[0]
     
     def sample(self, batch_size):
-        samples = zip(*random.sample(self.memory, batch_size))
+        samples = zip(*random.sample(self.memory, batch_size))  #* star unpacks a sequence
         return map(lambda x: Variable(torch.cat(x, 0)), samples)
 
 # Implementing Deep Q Learning
@@ -60,7 +60,7 @@ class Dqn():
         self.last_reward = 0
     
     def select_action(self, state):
-        probs = F.softmax(self.model(Variable(state, volatile = True))*10) # T=100
+        probs = F.softmax(self.model(Variable(state, volatile = True))*10) # T=10, higher the temperature more sure the nn is
         action = probs.multinomial()
         return action.data[0,0]
     
